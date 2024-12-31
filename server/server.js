@@ -21,7 +21,6 @@ app.post("/register", async (req, res) => {
   try {
     const { first_name, last_name, mobile_number, password } = req.body;
 
-    // Check if mobile_number already exists
     const existingUser = await User.findOne({ where: { mobile_number } });
     if (existingUser) {
       return res
@@ -29,17 +28,16 @@ app.post("/register", async (req, res) => {
         .json({ message: "Mobile number already registered" });
     }
 
-    // Hash password
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user in the database
     const newUser = await User.create({
       first_name,
       last_name,
       mobile_number,
       password: hashedPassword,
-      created_by: "system", // Set this as needed
-      updated_by: "system", // Set this as needed
+      created_by: "system", 
+      updated_by: "system", 
     });
 
     res
@@ -52,7 +50,6 @@ app.post("/register", async (req, res) => {
       .json({ message: "Error registering user", error: error.message });
   }
 });
-
 
 app.post("/login", async (req, res) => {
   const { mobile_number, password } = req.body;
@@ -93,12 +90,14 @@ app.get("/auth/facebook", (req, res) => {
 app.get("/auth/apple", (req, res) => {
   res.send("Apple ID login integration (OAuth)");
 });
-sequelize.sync({ force: false }).then(() => {
-  console.log("Database synchronized.");
-}).catch((error) => {
-  console.error("Error syncing database:", error);
-});
-
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("Database synchronized.");
+  })
+  .catch((error) => {
+    console.error("Error syncing database:", error);
+  });
 
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
